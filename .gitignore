@@ -1,15 +1,119 @@
-# Terraform
+# Local .terraform directories
 .terraform/
+
+# .tfstate files
 *.tfstate
-*.tfstate.backup
-*.tfplan
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files, which are likely to contain sensitive data, such as
+# password, private keys, and other secrets. These should not be part of version
+# control as they are data points which are potentially sensitive and subject
+# to change depending on the environment.
+secrets.tfvars
+*.tfvars.json
+
+# Explicitly ignore secrets files
+**/secrets.tfvars
+**/secrets.auto.tfvars
+**/secret.tfvars
+
+# Allow example tfvars to be committed
+!**/*.tfvars.example
+!**/terraform.tfvars.example
+
+# Ignore override files as they are usually used to override resources locally and so
+# are not checked in
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore transient lock info files created by terraform apply
+.terraform.tfstate.lock.info
+
+# Include override files you do wish to add to version control using negated pattern
+# !example_override.tf
+
+# Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
+# example: *tfplan*
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+# Ignore external modules downloaded by terraform
 .terraform.lock.hcl
 
-# Sensitive files
-*.pem
-*.key
-*.pub
+# Ignore plan files (they can contain sensitive data)
+*.tfplan
+*.tfplan.json
+*tfplan*
 
-# OS files
+# Ignore state backup files
+*.backup
+
+# Ignore environment files
+.env
+.env.*
+!.env.example
+
+# Ignore log files
+*.log
+
+# Ignore OS files
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Ignore temporary files
+tmp/
+temp/
+*.tmp
+
+# Ignore SSH keys
+*.pem
+*.key
+
+# Ignore provider caches
+.terraform.d/
+
+# Ignore Terragrunt files
+.terragrunt-cache/
+
+# Ignore sentinel files
+sentinel.hcl
+
+# AI and LLM related files
+.claude/
+.aider*
+.cursor/
+.copilot/
+.cursor-tutor/
+*.ai
+*.llm
+.openai/
+.anthropic/
+.gpt/
+aider.tags.cache.v3/
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache.v*
+.continue/
+.windsurf/
+.sourcegraph/
+.codeium/
+.tabnine/
+.github-copilot/
+prompt_cache/
+llm_cache/
+ai_context/
+.ai/
+.llm/
