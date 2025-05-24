@@ -76,8 +76,8 @@ module "pip_vm_01" {
   name                    = var.public_ip_name
   resource_group_name     = module.rg_production.name
   location                = var.public_ip_location
-  allocation_method       = "Static"
-  sku                     = "Standard"
+  allocation_method       = "Dynamic"
+  sku                     = "Basic"
   ip_version              = "IPv4"
   idle_timeout_in_minutes = 4
   domain_name_label       = var.public_ip_domain_label
