@@ -8,8 +8,8 @@ variable "name" {
   type        = string
 }
 
-variable "value" {
-  description = "The value of the DNS record"
+variable "content" {
+  description = "The content of the DNS record"
   type        = string
 }
 

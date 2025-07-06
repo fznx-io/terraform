@@ -5,7 +5,7 @@ zone_id = "2afcbb4fccb6e950a315e5f34a9f75b8"
 dns_records = {
   root = {
     name    = "@"
-    value   = "REDACTED"
+    content = "REDACTED"
     type    = "A"
     ttl     = 1
     proxied = true
@@ -13,7 +13,7 @@ dns_records = {
   }
   linkedin = {
     name    = "linkedin"
-    value   = "linkedin.com/in/fauzan-n"
+    content = "linkedin.com/in/fauzan-n"
     type    = "CNAME"
     ttl     = 1
     proxied = false

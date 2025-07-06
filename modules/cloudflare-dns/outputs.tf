@@ -18,9 +18,9 @@ output "type" {
   value       = cloudflare_record.this.type
 }
 
-output "value" {
-  description = "The value of the DNS record"
-  value       = cloudflare_record.this.value
+output "content" {
+  description = "The content of the DNS record"
+  value       = cloudflare_record.this.content
 }
 
 output "proxied" {
