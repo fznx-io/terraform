@@ -13,7 +13,7 @@ variable "dns_records" {
   description = "Map of DNS records to create"
   type = map(object({
     name    = string
-    value   = string
+    content = string
     type    = string
     ttl     = number
     proxied = bool
