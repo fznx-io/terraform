@@ -64,6 +64,28 @@ module "nsg_vm_01" {
       source_address_prefix      = var.ssh_rule_source_address_prefix
       destination_address_prefix = "*"
     }
+    http = {
+      name                       = "HTTP"
+      priority                   = 310
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "80"
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    }
+    https = {
+      name                       = "HTTPS"
+      priority                   = 320
+      direction                  = "Inbound"
+      access                     = "Allow"
+      protocol                   = "Tcp"
+      source_port_range          = "*"
+      destination_port_range     = "443"
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    }
   }
 
   tags = var.tags
