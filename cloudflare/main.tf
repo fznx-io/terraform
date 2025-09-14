@@ -32,9 +32,6 @@ module "zone_settings" {
 
   # Performance Settings
   brotli                   = var.brotli
-  minify_css               = var.minify_css
-  minify_js                = var.minify_js
-  minify_html              = var.minify_html
   http3                    = var.http3
   zero_rtt                 = var.zero_rtt
   ipv6                     = var.ipv6

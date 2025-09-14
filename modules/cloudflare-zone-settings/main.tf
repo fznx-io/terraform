@@ -25,11 +25,6 @@ resource "cloudflare_zone_settings_override" "this" {
 
     # Performance Settings
     brotli                   = var.brotli
-    minify {
-      css  = var.minify_css
-      js   = var.minify_js
-      html = var.minify_html
-    }
 
     # HTTP/3 and 0-RTT
     http3                    = var.http3

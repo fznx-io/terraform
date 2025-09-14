@@ -80,24 +80,6 @@ variable "brotli" {
   default     = "on"
 }
 
-variable "minify_css" {
-  description = "Minify CSS"
-  type        = string
-  default     = "on"
-}
-
-variable "minify_js" {
-  description = "Minify JavaScript"
-  type        = string
-  default     = "on"
-}
-
-variable "minify_html" {
-  description = "Minify HTML"
-  type        = string
-  default     = "on"
-}
-
 variable "http3" {
   description = "Enable HTTP/3"
   type        = string
