@@ -13,10 +13,34 @@ dns_records = {
   }
   linkedin = {
     name    = "linkedin"
-    content = "linkedin.com/in/fauzan-n"
+    content = "fznx.io"
     type    = "CNAME"
     ttl     = 1
-    proxied = false
+    proxied = true
     comment = ""
+  }
+  stackoverflow = {
+    name    = "stackoverflow"
+    content = "fznx.io"
+    type    = "CNAME"
+    ttl     = 1
+    proxied = true
+    comment = ""
+  }
+}
+
+# Redirect Rules Configuration
+redirect_rules = {
+  linkedin = {
+    expression  = "(http.host eq \"linkedin.fznx.io\")"
+    target_url  = "https://linkedin.com/in/fauzan-n"
+    status_code = 301
+    description = "Redirect linkedin.fznx.io to LinkedIn profile"
+  }
+  stackoverflow = {
+    expression  = "(http.host eq \"stackoverflow.fznx.io\")"
+    target_url  = "https://stackoverflow.com/users/6822338"
+    status_code = 301
+    description = "Redirect stackoverflow.fznx.io to Stack Overflow profile"
   }
 }

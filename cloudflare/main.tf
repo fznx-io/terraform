@@ -37,6 +37,14 @@ module "zone_settings" {
   ipv6                     = var.ipv6
 }
 
+# Redirect Rules
+module "redirect_rules" {
+  source = "../modules/cloudflare-redirect-rules"
+
+  zone_id        = var.zone_id
+  redirect_rules = var.redirect_rules
+}
+
 # Universal SSL Certificate (Free)
 # Note: This is automatically enabled for all Cloudflare zones
 # The certificate is managed by Cloudflare and auto-renewed

@@ -49,9 +49,9 @@ variable "min_tls_version" {
 }
 
 variable "tls_1_3" {
-  description = "Enable TLS 1.3"
+  description = "Enable TLS 1.3 (on, off, or zrt for 0-RTT)"
   type        = string
-  default     = "on"
+  default     = "zrt"
 }
 
 # Security Variables
@@ -96,4 +96,18 @@ variable "ipv6" {
   description = "Enable IPv6"
   type        = string
   default     = "on"
+}
+
+# Redirect Rules
+variable "redirect_rules" {
+  description = "Map of redirect rules"
+  type = map(object({
+    expression            = string
+    target_url            = string
+    status_code           = optional(number, 301)
+    preserve_query_string = optional(bool, false)
+    description           = optional(string, "")
+    enabled               = optional(bool, true)
+  }))
+  default = {}
 }
