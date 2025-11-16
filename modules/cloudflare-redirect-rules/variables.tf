@@ -4,8 +4,8 @@ variable "zone_id" {
 }
 
 variable "redirect_rules" {
-  description = "Map of redirect rules"
-  type = map(object({
+  description = "List of redirect rules (order preserved)"
+  type = list(object({
     expression            = string
     target_url            = string
     status_code           = optional(number, 301)
@@ -13,5 +13,5 @@ variable "redirect_rules" {
     description           = optional(string, "")
     enabled               = optional(bool, true)
   }))
-  default = {}
+  default = []
 }
