@@ -77,87 +77,29 @@ variable "ssh_rule_source_address_prefix" {
   type        = string
 }
 
-# Public IP
-variable "public_ip_name" {
-  description = "Name of the public IP"
-  type        = string
-}
-
-variable "public_ip_location" {
-  description = "Location of the public IP"
-  type        = string
-}
-
-variable "public_ip_domain_label" {
-  description = "Domain name label for the public IP"
-  type        = string
-}
-
-# Network Interface
-variable "nic_name" {
-  description = "Name of the network interface"
-  type        = string
-}
-
-variable "nic_location" {
-  description = "Location of the network interface"
-  type        = string
-}
-
-# Virtual Machine
-variable "vm_name" {
-  description = "Name of the virtual machine"
-  type        = string
-}
-
-variable "vm_location" {
-  description = "Location of the virtual machine"
-  type        = string
-}
-
-variable "vm_size" {
-  description = "Size of the virtual machine"
-  type        = string
-}
-
-variable "vm_admin_username" {
-  description = "Admin username for the virtual machine"
-  type        = string
+# Virtual Machines
+variable "virtual_machines" {
+  description = "Map of virtual machine configurations"
+  type = map(object({
+    name                   = string
+    location               = string
+    size                   = string
+    admin_username         = string
+    os_disk_name           = string
+    os_disk_size_gb        = number
+    image_publisher        = string
+    image_offer            = string
+    image_sku              = string
+    image_version          = string
+    public_ip_name         = string
+    public_ip_domain_label = string
+    nic_name               = string
+  }))
 }
 
 variable "vm_admin_ssh_keys" {
   description = "List of SSH public keys for VM admin access"
   type        = list(string)
-}
-
-variable "vm_os_disk_name" {
-  description = "Name of the VM OS disk"
-  type        = string
-}
-
-variable "vm_os_disk_size_gb" {
-  description = "Size of the OS disk in GB"
-  type        = number
-}
-
-variable "vm_image_publisher" {
-  description = "Publisher of the VM image"
-  type        = string
-}
-
-variable "vm_image_offer" {
-  description = "Offer of the VM image"
-  type        = string
-}
-
-variable "vm_image_sku" {
-  description = "SKU of the VM image"
-  type        = string
-}
-
-variable "vm_image_version" {
-  description = "Version of the VM image"
-  type        = string
 }
 
 # Storage Account

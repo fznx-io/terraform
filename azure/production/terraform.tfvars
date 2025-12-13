@@ -23,26 +23,24 @@ nsg_name                        = "vm-01-nsg"
 nsg_location                    = "australiaeast"
 ssh_rule_source_address_prefix  = "*"
 
-# Public IP
-public_ip_name         = "vm-01-ip"
-public_ip_location     = "australiaeast"
-public_ip_domain_label = "vm-01"
-
-# Network Interface
-nic_name     = "vm-0110"
-nic_location = "australiaeast"
-
-# Virtual Machine
-vm_name           = "vm-01"
-vm_location       = "australiaeast"
-vm_size           = "Standard_B2ats_v2"
-vm_admin_username = "fauzan"
-vm_os_disk_name    = "vm-01_OsDisk_1_3751e85c2f754e9988fbbcc2b1067b2f"
-vm_os_disk_size_gb = 64
-vm_image_publisher = "debian"
-vm_image_offer     = "debian-11"
-vm_image_sku       = "11-gen2"
-vm_image_version   = "latest"
+# Virtual Machines
+virtual_machines = {
+  "vm-01" = {
+    name                   = "vm-01"
+    location               = "australiaeast"
+    size                   = "Standard_B2ats_v2"
+    admin_username         = "fauzan"
+    os_disk_name           = "vm-01_OsDisk_1_3751e85c2f754e9988fbbcc2b1067b2f"
+    os_disk_size_gb        = 64
+    image_publisher        = "debian"
+    image_offer            = "debian-11"
+    image_sku              = "11-gen2"
+    image_version          = "latest"
+    public_ip_name         = "vm-01-ip"
+    public_ip_domain_label = "vm-01"
+    nic_name               = "vm-0110"
+  }
+}
 
 # Storage Account
 storage_account_name     = "cs11003200559f3eafb"
