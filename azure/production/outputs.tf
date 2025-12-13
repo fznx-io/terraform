@@ -1,21 +1,21 @@
-output "vm_public_ip" {
-  description = "Public IP address of the VM"
-  value       = module.pip_vm_01.ip_address
+output "vm_public_ips" {
+  description = "Public IP addresses of the VMs"
+  value       = { for k, v in module.public_ips : k => v.ip_address }
 }
 
-output "vm_fqdn" {
-  description = "Fully qualified domain name of the VM"
-  value       = module.pip_vm_01.fqdn
+output "vm_fqdns" {
+  description = "Fully qualified domain names of the VMs"
+  value       = { for k, v in module.public_ips : k => v.fqdn }
 }
 
-output "vm_private_ip" {
-  description = "Private IP address of the VM"
-  value       = module.nic_vm_01.private_ip_address
+output "vm_private_ips" {
+  description = "Private IP addresses of the VMs"
+  value       = { for k, v in module.network_interfaces : k => v.private_ip_address }
 }
 
-output "vm_id" {
-  description = "The ID of the virtual machine"
-  value       = module.vm_01.id
+output "vm_ids" {
+  description = "The IDs of the virtual machines"
+  value       = { for k, v in module.virtual_machines : k => v.id }
 }
 
 output "storage_account_name" {

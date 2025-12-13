@@ -91,30 +91,32 @@ module "nsg_vm_01" {
   tags = var.tags
 }
 
-# Public IP
-module "pip_vm_01" {
-  source = "../../modules/public-ip"
+# Public IPs
+module "public_ips" {
+  source   = "../../modules/public-ip"
+  for_each = var.virtual_machines
 
-  name                    = var.public_ip_name
+  name                    = each.value.public_ip_name
   resource_group_name     = module.rg_production.name
-  location                = var.public_ip_location
+  location                = each.value.location
   allocation_method       = "Dynamic"
   sku                     = "Basic"
   ip_version              = "IPv4"
   idle_timeout_in_minutes = 4
-  domain_name_label       = var.public_ip_domain_label
+  domain_name_label       = each.value.public_ip_domain_label
   ddos_protection_mode    = "VirtualNetworkInherited"
 
   tags = var.tags
 }
 
-# Network Interface
-module "nic_vm_01" {
-  source = "../../modules/network-interface"
+# Network Interfaces
+module "network_interfaces" {
+  source   = "../../modules/network-interface"
+  for_each = var.virtual_machines
 
-  name                          = var.nic_name
+  name                          = each.value.nic_name
   resource_group_name           = module.rg_production.name
-  location                      = var.nic_location
+  location                      = each.value.location
   enable_accelerated_networking = false
   enable_ip_forwarding          = false
 
@@ -122,7 +124,7 @@ module "nic_vm_01" {
     name                          = "ipconfig1"
     subnet_id                     = module.vnet_vm_01.subnet_ids["default"]
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = module.pip_vm_01.id
+    public_ip_address_id          = module.public_ips[each.key].id
     primary                       = true
   }
 
@@ -131,33 +133,78 @@ module "nic_vm_01" {
   tags = var.tags
 }
 
-# Virtual Machine
-module "vm_01" {
-  source = "../../modules/linux-vm"
+# Virtual Machines
+module "virtual_machines" {
+  source   = "../../modules/linux-vm"
+  for_each = var.virtual_machines
 
-  name                            = var.vm_name
+  name                            = each.value.name
   resource_group_name             = module.rg_production.name
-  location                        = var.vm_location
-  vm_size                         = var.vm_size
-  admin_username                  = var.vm_admin_username
+  location                        = each.value.location
+  vm_size                         = each.value.size
+  admin_username                  = each.value.admin_username
   disable_password_authentication = true
-  network_interface_ids           = [module.nic_vm_01.id]
+  network_interface_ids           = [module.network_interfaces[each.key].id]
 
   admin_ssh_keys = var.vm_admin_ssh_keys
 
   os_disk = {
-    name                 = var.vm_os_disk_name
+    name                 = each.value.os_disk_name
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
-    disk_size_gb         = var.vm_os_disk_size_gb
+    disk_size_gb         = each.value.os_disk_size_gb
   }
 
   source_image_reference = {
-    publisher = var.vm_image_publisher
-    offer     = var.vm_image_offer
-    sku       = var.vm_image_sku
-    version   = var.vm_image_version
+    publisher = each.value.image_publisher
+    offer     = each.value.image_offer
+    sku       = each.value.image_sku
+    version   = each.value.image_version
   }
+
+  tags = var.tags
+}
+
+# Custom Script Extension for VM Setup (Python FastAPI + Next.js)
+resource "azurerm_virtual_machine_extension" "vm_01_setup" {
+  name                 = "vm-01-setup-script"
+  virtual_machine_id   = module.virtual_machines["vm-01"].id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.1"
+
+  settings = jsonencode({
+    script = base64encode(<<-EOF
+      #!/bin/bash
+      set -e
+
+      # Update system packages
+      apt-get update
+      apt-get upgrade -y
+
+      # Install Python and pip
+      apt-get install -y python3 python3-pip python3-venv
+
+      # Install FastAPI and Uvicorn
+      pip3 install fastapi uvicorn[standard]
+
+      # Install Node.js (LTS) and npm for Next.js
+      curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+      apt-get install -y nodejs
+
+      # Install PM2 for process management
+      npm install -g pm2
+
+      # Create app directories
+      mkdir -p /opt/apps/fastapi
+      mkdir -p /opt/apps/nextjs
+
+      # Log completion
+      echo "Setup completed: Python FastAPI and Next.js environment installed" >> /var/log/vm-setup.log
+      date >> /var/log/vm-setup.log
+    EOF
+    )
+  })
 
   tags = var.tags
 }
