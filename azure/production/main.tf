@@ -165,7 +165,7 @@ module "virtual_machines" {
   tags = var.tags
 }
 
-# Custom Script Extension for VM Setup (Python FastAPI + Next.js)
+# Custom Script Extension for VM Setup (Nginx + FastAPI + Next.js)
 resource "azurerm_virtual_machine_extension" "vm_01_setup" {
   name                 = "vm-01-setup-script"
   virtual_machine_id   = module.virtual_machines["vm-01"].id
@@ -181,6 +181,9 @@ resource "azurerm_virtual_machine_extension" "vm_01_setup" {
       # Update system packages
       apt-get update
       apt-get upgrade -y
+
+      # Install Nginx
+      apt-get install -y nginx
 
       # Install Python and pip
       apt-get install -y python3 python3-pip python3-venv
@@ -199,8 +202,48 @@ resource "azurerm_virtual_machine_extension" "vm_01_setup" {
       mkdir -p /opt/apps/fastapi
       mkdir -p /opt/apps/nextjs
 
+      # Configure Nginx as reverse proxy
+      cat > /etc/nginx/sites-available/default <<'NGINX'
+      server {
+          listen 80 default_server;
+          listen [::]:80 default_server;
+          server_name _;
+
+          # FastAPI backend - /api routes
+          location /api/ {
+              proxy_pass http://127.0.0.1:8000/;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection 'upgrade';
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_cache_bypass $http_upgrade;
+          }
+
+          # Next.js frontend - all other routes
+          location / {
+              proxy_pass http://127.0.0.1:3000;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection 'upgrade';
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_cache_bypass $http_upgrade;
+          }
+      }
+      NGINX
+
+      # Test and reload Nginx
+      nginx -t
+      systemctl reload nginx
+      systemctl enable nginx
+
       # Log completion
-      echo "Setup completed: Python FastAPI and Next.js environment installed" >> /var/log/vm-setup.log
+      echo "Setup completed: Nginx + FastAPI + Next.js environment installed" >> /var/log/vm-setup.log
       date >> /var/log/vm-setup.log
     EOF
     )
