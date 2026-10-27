@@ -12,16 +12,35 @@ rg_cloud_shell_name         = "cloud-shell-storage-southeastasia"
 rg_cloud_shell_location     = "southeastasia"
 
 # Virtual Network
-vnet_name             = "vm-01-vnet"
-vnet_location         = "australiaeast"
-vnet_address_space    = ["10.1.0.0/16"]
-subnet_name           = "default"
+vnet_name               = "vm-01-vnet"
+vnet_location           = "australiaeast"
+vnet_address_space      = ["10.1.0.0/16"]
+subnet_name             = "default"
 subnet_address_prefixes = ["10.1.1.0/24"]
 
 # Network Security Group
-nsg_name                        = "vm-01-nsg"
-nsg_location                    = "australiaeast"
-ssh_rule_source_address_prefix  = "*"
+nsg_name                       = "vm-01-nsg"
+nsg_location                   = "australiaeast"
+ssh_rule_source_address_prefix = "*"
+
+# Cloudflare IPv4 ranges (origin-lock for HTTP/HTTPS). Source: https://www.cloudflare.com/ips-v4
+cloudflare_ip_ranges = [
+  "173.245.48.0/20",
+  "103.21.244.0/22",
+  "103.22.200.0/22",
+  "103.31.4.0/22",
+  "141.101.64.0/18",
+  "108.162.192.0/18",
+  "190.93.240.0/20",
+  "188.114.96.0/20",
+  "197.234.240.0/22",
+  "198.41.128.0/17",
+  "162.158.0.0/15",
+  "104.16.0.0/13",
+  "104.24.0.0/14",
+  "172.64.0.0/13",
+  "131.0.72.0/22",
+]
 
 # Virtual Machines
 virtual_machines = {

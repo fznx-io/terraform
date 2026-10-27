@@ -77,6 +77,11 @@ variable "ssh_rule_source_address_prefix" {
   type        = string
 }
 
+variable "cloudflare_ip_ranges" {
+  description = "Cloudflare IPv4 ranges allowed to reach the origin on 80/443 (source: https://www.cloudflare.com/ips-v4)"
+  type        = list(string)
+}
+
 # Virtual Machines
 variable "virtual_machines" {
   description = "Map of virtual machine configurations"
