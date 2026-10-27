@@ -65,25 +65,27 @@ module "nsg_vm_01" {
       destination_address_prefix = "*"
     }
     http = {
-      name                       = "HTTP"
-      priority                   = 310
-      direction                  = "Inbound"
-      access                     = "Allow"
-      protocol                   = "Tcp"
-      source_port_range          = "*"
-      destination_port_range     = "80"
-      source_address_prefix      = "*"
+      name                   = "HTTP"
+      priority               = 310
+      direction              = "Inbound"
+      access                 = "Allow"
+      protocol               = "Tcp"
+      source_port_range      = "*"
+      destination_port_range = "80"
+      # Origin-lock: only Cloudflare may reach the website over HTTP/HTTPS
+      source_address_prefixes    = var.cloudflare_ip_ranges
       destination_address_prefix = "*"
     }
     https = {
-      name                       = "HTTPS"
-      priority                   = 320
-      direction                  = "Inbound"
-      access                     = "Allow"
-      protocol                   = "Tcp"
-      source_port_range          = "*"
-      destination_port_range     = "443"
-      source_address_prefix      = "*"
+      name                   = "HTTPS"
+      priority               = 320
+      direction              = "Inbound"
+      access                 = "Allow"
+      protocol               = "Tcp"
+      source_port_range      = "*"
+      destination_port_range = "443"
+      # Origin-lock: only Cloudflare may reach the website over HTTP/HTTPS
+      source_address_prefixes    = var.cloudflare_ip_ranges
       destination_address_prefix = "*"
     }
   }
@@ -202,12 +204,54 @@ resource "azurerm_virtual_machine_extension" "vm_01_setup" {
       mkdir -p /opt/apps/fastapi
       mkdir -p /opt/apps/nextjs
 
+      # Origin TLS cert for Cloudflare Full mode (self-signed; replace with a
+      # Cloudflare Origin CA cert to move to Full (Strict))
+      mkdir -p /etc/ssl/fznx.io
+      openssl req -x509 -newkey rsa:2048 -nodes -keyout /etc/ssl/fznx.io/origin.key -out /etc/ssl/fznx.io/origin.pem -days 3650 -subj "/CN=fznx.io" -addext "subjectAltName=DNS:fznx.io,DNS:*.fznx.io"
+      chmod 600 /etc/ssl/fznx.io/origin.key
+
       # Configure Nginx as reverse proxy
       cat > /etc/nginx/sites-available/default <<'NGINX'
       server {
           listen 80 default_server;
           listen [::]:80 default_server;
           server_name _;
+
+          # FastAPI backend - /api routes
+          location /api/ {
+              proxy_pass http://127.0.0.1:8000/;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection 'upgrade';
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_cache_bypass $http_upgrade;
+          }
+
+          # Next.js frontend - all other routes
+          location / {
+              proxy_pass http://127.0.0.1:3000;
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection 'upgrade';
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_cache_bypass $http_upgrade;
+          }
+      }
+
+      server {
+          listen 443 ssl;
+          listen [::]:443 ssl;
+          server_name _;
+
+          ssl_certificate     /etc/ssl/fznx.io/origin.pem;
+          ssl_certificate_key /etc/ssl/fznx.io/origin.key;
+          ssl_protocols TLSv1.2 TLSv1.3;
 
           # FastAPI backend - /api routes
           location /api/ {
@@ -250,6 +294,14 @@ resource "azurerm_virtual_machine_extension" "vm_01_setup" {
   })
 
   tags = var.tags
+
+  # Bootstraps the VM on create only. NOT re-applied on updates: the script runs
+  # apt upgrade + nginx reinstall, which would disrupt the running origin. Live
+  # changes (the :443 block, origin cert, etc.) are made out of band via
+  # az run-command, so updates to the script here are intentionally ignored.
+  lifecycle {
+    ignore_changes = [settings]
+  }
 }
 
 # Cloud Shell Storage Account

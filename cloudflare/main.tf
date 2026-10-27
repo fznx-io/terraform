@@ -26,15 +26,15 @@ module "zone_settings" {
   tls_1_3                  = var.tls_1_3
 
   # Security Settings
-  security_level           = var.security_level
-  browser_check            = var.browser_check
-  challenge_ttl            = var.challenge_ttl
+  security_level = var.security_level
+  browser_check  = var.browser_check
+  challenge_ttl  = var.challenge_ttl
 
   # Performance Settings
-  brotli                   = var.brotli
-  http3                    = var.http3
-  zero_rtt                 = var.zero_rtt
-  ipv6                     = var.ipv6
+  brotli   = var.brotli
+  http3    = var.http3
+  zero_rtt = var.zero_rtt
+  ipv6     = var.ipv6
 }
 
 # Redirect Rules

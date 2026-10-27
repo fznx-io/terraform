@@ -1,6 +1,12 @@
 # Cloudflare Zone ID for fznx.io
 zone_id = "2afcbb4fccb6e950a315e5f34a9f75b8"
 
+# Edge->origin encryption. The live zone uses "Automatic SSL/TLS", which resolved
+# to Full now that the origin serves 443. The classic ssl setting can't express
+# "automatic", so this pins the equivalent effective mode. Requires a cert on the
+# origin (self-signed works for Full; Full (Strict) would need an Origin CA cert).
+ssl_mode = "full"
+
 # DNS Records Configuration
 dns_records = {
   root = {
