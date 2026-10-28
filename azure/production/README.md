@@ -24,7 +24,7 @@ This configuration manages the following Azure resources:
 - **VNet**: vm-01-vnet (10.1.0.0/16) in Australia East
 - **Subnet**: default (10.1.1.0/24)
 - **NSG**: vm-01-nsg with SSH access (port 22)
-- **Public IP**: vm-01-ip (REDACTED)
+- **Public IP**: vm-01-ip (see `terraform output vm_public_ips`)
 - **FQDN**: vm-01.australiaeast.cloudapp.azure.com
 
 ### Compute

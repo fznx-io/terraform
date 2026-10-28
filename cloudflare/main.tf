@@ -5,7 +5,7 @@ module "dns_records" {
 
   zone_id = var.zone_id
   name    = each.value.name
-  content = each.value.content
+  content = coalesce(each.value.content, var.origin_ip)
   type    = each.value.type
   ttl     = each.value.ttl
   proxied = each.value.proxied
