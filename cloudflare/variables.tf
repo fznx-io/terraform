@@ -9,11 +9,16 @@ variable "zone_id" {
   type        = string
 }
 
+variable "origin_ip" {
+  description = "Origin server public IP. Kept in secrets.auto.tfvars so it stays out of the public repo"
+  type        = string
+}
+
 variable "dns_records" {
-  description = "Map of DNS records to create"
+  description = "Map of DNS records to create. Records without content point at origin_ip"
   type = map(object({
     name    = string
-    content = string
+    content = optional(string)
     type    = string
     ttl     = number
     proxied = bool
