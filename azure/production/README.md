@@ -10,7 +10,7 @@ This configuration manages the following Azure resources:
 - Network Security Groups
 - Public IP Addresses
 - Network Interfaces
-- Linux Virtual Machines (Debian 11)
+- Linux Virtual Machines (Debian 12)
 - Storage Accounts
 
 ## Architecture
@@ -29,7 +29,7 @@ This configuration manages the following Azure resources:
 
 ### Compute
 - **VM**: vm-01 (Standard_B2ats_v2)
-  - OS: Debian 11 Gen2
+  - OS: Debian 12 Gen2 (originally deployed from the debian-11 image, upgraded in place 2026-08-03; image changes are ignored by Terraform)
   - Disk: 64GB Premium SSD
   - Authentication: SSH key only
   - Location: Australia East

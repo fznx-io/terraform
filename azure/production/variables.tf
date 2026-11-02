@@ -124,3 +124,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "run_vm_01_setup" {
+  description = "Create the vm-01 CustomScript bootstrap extension. Only for a fresh VM build; it runs apt upgrade and rewrites nginx."
+  type        = bool
+  default     = false
+}
