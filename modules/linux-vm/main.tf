@@ -30,4 +30,11 @@ resource "azurerm_linux_virtual_machine" "this" {
   }
 
   tags = var.tags
+
+  # source_image_reference is ForceNew and only matters at creation. Ignoring it
+  # keeps an image bump (e.g. a deprecated marketplace offer) from destroying the
+  # VM and its OS disk. Rebuild deliberately with `terraform apply -replace=...`.
+  lifecycle {
+    ignore_changes = [source_image_reference]
+  }
 }
