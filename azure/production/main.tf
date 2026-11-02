@@ -168,7 +168,13 @@ module "virtual_machines" {
 }
 
 # Custom Script Extension for VM Setup (Nginx + FastAPI + Next.js)
+# Bootstrap script for a freshly built vm-01 only. Off by default: vm-01 is
+# already provisioned and has no extension, so creating it would run apt upgrade
+# and rewrite nginx on the live origin. Set run_vm_01_setup = true only when
+# rebuilding the VM.
 resource "azurerm_virtual_machine_extension" "vm_01_setup" {
+  count = var.run_vm_01_setup ? 1 : 0
+
   name                 = "vm-01-setup-script"
   virtual_machine_id   = module.virtual_machines["vm-01"].id
   publisher            = "Microsoft.Azure.Extensions"

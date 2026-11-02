@@ -65,3 +65,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "boot_diagnostics_enabled" {
+  description = "Enable boot diagnostics with a managed storage account"
+  type        = bool
+  default     = true
+}

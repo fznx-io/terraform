@@ -29,6 +29,12 @@ resource "azurerm_linux_virtual_machine" "this" {
     version   = var.source_image_reference.version
   }
 
+  # Managed storage account (no storage_account_uri), matching the live VM.
+  dynamic "boot_diagnostics" {
+    for_each = var.boot_diagnostics_enabled ? [1] : []
+    content {}
+  }
+
   tags = var.tags
 
   # source_image_reference is ForceNew and only matters at creation. Ignoring it
