@@ -8,10 +8,10 @@ zone_id = "2afcbb4fccb6e950a315e5f34a9f75b8"
 ssl_mode = "full"
 
 # DNS Records Configuration
+# Records without content point at origin_ip (set in secrets.auto.tfvars)
 dns_records = {
   root = {
     name    = "@"
-    content = "REDACTED"
     type    = "A"
     ttl     = 1
     proxied = true
